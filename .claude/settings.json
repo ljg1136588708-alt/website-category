@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const {HOME_TOOLS} = require\\('./src/data/tools.ts'\\); console.log\\(HOME_TOOLS.length\\)\")",
+      "Bash(node --input-type=module)",
+      "Bash(node fix_badges.js)",
+      "WebFetch(domain:www.perplexity.ai)",
+      "WebFetch(domain:substack.com)",
+      "WebFetch(domain:getpocket.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:www.producthunt.com)",
+      "WebFetch(domain:simpleicons.org)",
+      "WebFetch(domain:brandfetch.com)",
+      "WebFetch(domain:firebase.google.com)",
+      "WebFetch(domain:sentry.io)"
+    ]
+  }
+}

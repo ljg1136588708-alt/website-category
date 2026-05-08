@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>新上线 — WebVerse</title>
+  <style>
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --card: #16161f;
+      --border: rgba(255,255,255,0.07); --border-hover: rgba(139,92,246,0.5);
+      --text: #f0f0ff; --muted: #6b7280;
+      --accent1: #8b5cf6; --accent2: #06b6d4; --accent3: #f59e0b;
+      --gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      --glow: 0 0 40px rgba(139,92,246,0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system,'Inter','Segoe UI',sans-serif; min-height: 100vh; overflow-x: hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+    .blob { position:fixed; border-radius:50%; filter:blur(120px); opacity:0.12; pointer-events:none; z-index:0; }
+    .blob-1 { width:600px;height:600px;background:#8b5cf6;top:-200px;left:-200px; }
+    .blob-2 { width:500px;height:500px;background:#06b6d4;bottom:-150px;right:-150px; }
+    .blob-3 { width:400px;height:400px;background:#10b981;top:40%;left:40%; }
+
+    nav { position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between; }
+    .logo { display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;letter-spacing:-0.5px;text-decoration:none;color:var(--text); }
+    .logo-icon { width:32px;height:32px;background:var(--gradient);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px; }
+    .logo span { background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .nav-links { display:flex;gap:8px;list-style:none; }
+    .nav-links a { text-decoration:none;color:var(--muted);font-size:14px;padding:6px 14px;border-radius:8px;transition:all 0.2s; }
+    .nav-links a:hover { color:var(--text);background:rgba(255,255,255,0.05); }
+    .nav-links a.active { color:var(--text);background:rgba(139,92,246,0.15); }
+    .submit-btn { background:var(--gradient);border:none;color:white;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s; }
+    .submit-btn:hover { opacity:0.85; }
+
+    .sidebar { position:sticky;top:80px;height:fit-content; }
+    .sidebar-title { font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:12px; }
+    .cat-list { list-style:none;display:flex;flex-direction:column;gap:2px; }
+    .cat-item a { display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:14px;transition:all 0.2s; }
+    .cat-item a:hover { color:var(--text);background:rgba(255,255,255,0.04); }
+    .cat-item a.active { color:var(--text);background:rgba(139,92,246,0.12); }
+    .cat-item a.active .cat-icon { color:var(--accent1); }
+    .cat-icon { font-size:16px;width:20px;text-align:center; }
+    .cat-count { margin-left:auto;font-size:11px;background:rgba(255,255,255,0.06);border-radius:100px;padding:1px 8px;color:var(--muted); }
+
+    .badge { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px; }
+    .badge-pc { background:rgba(6,182,212,0.1);color:var(--accent2);border:1px solid rgba(6,182,212,0.2); }
+    .badge-app { background:rgba(139,92,246,0.1);color:var(--accent1);border:1px solid rgba(139,92,246,0.2); }
+    .badge-free { background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2); }
+    .badge-cn { background:rgba(245,158,11,0.1);color:var(--accent3);border:1px solid rgba(245,158,11,0.2); }
+    .badge-new { background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);font-weight:800;letter-spacing:0.5px; }
+
+    footer { position:relative;z-index:1;border-top:1px solid var(--border);padding:32px;text-align:center;color:var(--muted);font-size:13px; }
+    footer a { color:var(--accent1);text-decoration:none; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:3px; }
+
+    /* ── Page hero ── */
+    .page-hero { position:relative;z-index:1;text-align:center;padding:64px 32px 48px; }
+    .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:100px;padding:5px 14px;font-size:12px;color:#10b981;margin-bottom:20px;font-weight:500; }
+    .page-hero h1 { font-size:clamp(28px,4vw,52px);font-weight:800;letter-spacing:-1.5px;margin-bottom:12px; }
+    .green-text { background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .page-hero p { color:var(--muted);font-size:15px;max-width:480px;margin:0 auto 28px;line-height:1.6; }
+    .filter-chips { display:flex;justify-content:center;gap:8px;flex-wrap:wrap; }
+    .filter-chip { padding:7px 16px;border-radius:100px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:inherit;transition:all 0.2s; }
+    .filter-chip.active { background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.4);color:#10b981; }
+    .filter-chip:hover:not(.active) { color:var(--text);background:rgba(255,255,255,0.04); }
+
+    /* ── Layout ── */
+    .main { position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:48px 32px 80px;display:grid;grid-template-columns:220px 1fr;gap:32px; }
+
+    /* ── Featured card ── */
+    .featured-card { position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(6,182,212,0.05));border:1px solid rgba(16,185,129,0.2);border-radius:20px;padding:32px;display:flex;gap:28px;align-items:center;margin-bottom:40px;cursor:pointer;transition:all 0.25s; }
+    .featured-card:hover { border-color:rgba(16,185,129,0.4);transform:translateY(-2px);box-shadow:0 0 40px rgba(16,185,129,0.1); }
+    .featured-logo { font-size:64px;flex-shrink:0;width:96px;height:96px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;display:flex;align-items:center;justify-content:center; }
+    .featured-body { flex:1;min-width:0; }
+    .featured-eyebrow { display:flex;align-items:center;gap:8px;margin-bottom:10px; }
+    .featured-eyebrow-label { font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#10b981; }
+    .featured-title { font-size:28px;font-weight:800;letter-spacing:-0.8px;margin-bottom:8px; }
+    .featured-url { font-size:13px;color:var(--muted);margin-bottom:12px; }
+    .featured-desc { font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px;max-width:560px; }
+    .featured-badges { display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px; }
+    .featured-cta { display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;transition:all 0.2s;cursor:pointer; }
+    .featured-cta:hover { background:rgba(16,185,129,0.25); }
+    .featured-glow { position:absolute;width:300px;height:300px;background:#10b981;border-radius:50%;filter:blur(80px);opacity:0.06;top:-80px;right:-80px;pointer-events:none; }
+    .featured-tag { font-size:10px;font-weight:800;background:rgba(16,185,129,0.2);color:#10b981;border:1px solid rgba(16,185,129,0.35);padding:2px 8px;border-radius:100px;letter-spacing:0.5px; }
+
+    /* ── Timeline section ── */
+    .timeline-section { margin-bottom: 40px; }
+    .timeline-header { display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border); }
+    .timeline-dot { width:10px;height:10px;border-radius:50%;background:var(--gradient);flex-shrink:0;box-shadow:0 0 8px rgba(139,92,246,0.5); }
+    .timeline-title { font-size:15px;font-weight:700;letter-spacing:-0.3px; }
+    .timeline-date { font-size:12px;color:var(--muted);margin-left:auto; }
+    .timeline-count { font-size:11px;background:rgba(139,92,246,0.15);color:var(--accent1);padding:2px 10px;border-radius:100px;font-weight:600; }
+
+    /* ── New cards grid ── */
+    .cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; }
+    .new-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden; }
+    .new-card::before { content:'';position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity 0.25s; }
+    .new-card:hover { border-color:var(--border-hover);transform:translateY(-2px);box-shadow:var(--glow); }
+    .new-card:hover::before { opacity:0.03; }
+    .card-header { display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;position:relative; }
+    .card-logo { width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid var(--border); }
+    .card-meta { flex:1;min-width:0; }
+    .card-name { font-size:15px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .card-url { font-size:11px;color:var(--muted); }
+    .card-new-badge { position:absolute;top:0;right:0;font-size:10px;font-weight:800;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:2px 8px;border-radius:6px;letter-spacing:0.5px; }
+    .card-badges { display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;position:relative; }
+    .card-desc { font-size:13px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;position:relative; }
+    .card-footer { margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:relative; }
+    .card-cat { font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px; }
+    .card-date { font-size:11px;color:var(--muted); }
+
+    @media (max-width:768px) {
+      .main { grid-template-columns:1fr; }
+      .sidebar { display:none; }
+      .featured-card { flex-direction:column; }
+      .featured-logo { width:72px;height:72px;font-size:44px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🌐</div>
+      <span>WebVerse</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">发现</a></li>
+      <li><a href="ranking.html">排行榜</a></li>
+      <li><a href="new.html" class="active">新上线</a></li>
+      <li><a href="favorites.html">收藏夹</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="submit-btn">+ 提交网站</button>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="hero-badge">✨ 每日更新 · 全球首发</div>
+    <h1>最新<span class="green-text">上线工具</span></h1>
+    <p>第一时间发现全球新上线的网站与 APP，紧跟前沿，不错过任何好工具</p>
+    <div class="filter-chips">
+      <button class="filter-chip active" onclick="switchChip(this)">全部</button>
+      <button class="filter-chip" onclick="switchChip(this)">🤖 AI 工具</button>
+      <button class="filter-chip" onclick="switchChip(this)">🎨 设计</button>
+      <button class="filter-chip" onclick="switchChip(this)">💻 开发者</button>
+      <button class="filter-chip" onclick="switchChip(this)">📱 有 APP</button>
+    </div>
+  </section>
+
+  <div class="main">
+    <aside class="sidebar">
+      <div class="sidebar-title">分类筛选</div>
+      <ul class="cat-list">
+        <li class="cat-item"><a href="#" class="active"><span class="cat-icon">⚡</span>全部<span class="cat-count">12.4k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🤖</span>AI 工具<span class="cat-count">1.8k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎨</span>设计创作<span class="cat-count">980</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">💻</span>开发者<span class="cat-count">2.1k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📊</span>办公效率<span class="cat-count">760</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎬</span>视频影音<span class="cat-count">540</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📰</span>资讯阅读<span class="cat-count">430</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🛒</span>电商购物<span class="cat-count">380</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎮</span>游戏娱乐<span class="cat-count">620</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📚</span>教育学习<span class="cat-count">870</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">💰</span>金融理财<span class="cat-count">290</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🌍</span>社交媒体<span class="cat-count">340</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🔒</span>安全隐私<span class="cat-count">180</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+
+      <!-- Featured -->
+      <div class="featured-card">
+        <div class="featured-glow"></div>
+        <div class="featured-logo">🎥</div>
+        <div class="featured-body">
+          <div class="featured-eyebrow">
+            <span class="featured-eyebrow-label">今日精选</span>
+            <span class="featured-tag">NEW</span>
+          </div>
+          <div class="featured-title">Sora by OpenAI</div>
+          <div class="featured-url">sora.com</div>
+          <div class="featured-desc">OpenAI 发布的文生视频工具，输入文字描述即可生成高清逼真视频。支持最长 20 秒 1080p 输出，对物理世界的理解能力远超同类产品，被业界视为视频生成领域的里程碑。</div>
+          <div class="featured-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-free">免费/付费</span>
+            <span class="badge badge-new">✦ NEW</span>
+          </div>
+          <span class="featured-cta">查看详情 →</span>
+        </div>
+      </div>
+
+      <!-- Today -->
+      <div class="timeline-section">
+        <div class="timeline-header">
+          <div class="timeline-dot"></div>
+          <span class="timeline-title">今天新增</span>
+          <span class="timeline-count">2 个工具</span>
+          <span class="timeline-date">2026/05/07</span>
+        </div>
+        <div class="cards-grid">
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🌟</div>
+              <div class="card-meta">
+                <div class="card-name">Lovable</div>
+                <div class="card-url">lovable.dev</div>
+              </div>
+              <span class="card-new-badge">NEW</span>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">AI 驱动的 Web 应用生成器，描述需求即可自动生成完整应用，支持一键部署，无需任何编程经验</div>
+            <div class="card-footer">
+              <span class="card-cat">🤖 AI 工具</span>
+              <span class="card-date">今天</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🎬</div>
+              <div class="card-meta">
+                <div class="card-name">Pika 2.0</div>
+                <div class="card-url">pika.art</div>
+              </div>
+              <span class="card-new-badge">NEW</span>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">下一代 AI 视频创作平台，全新 2.0 版本大幅提升画质与一致性，新增角色动作控制功能</div>
+            <div class="card-footer">
+              <span class="card-cat">🎬 视频影音</span>
+              <span class="card-date">今天</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- This week -->
+      <div class="timeline-section">
+        <div class="timeline-header">
+          <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 8px rgba(6,182,212,0.5);"></div>
+          <span class="timeline-title">本周新增</span>
+          <span class="timeline-count">3 个工具</span>
+          <span class="timeline-date">2026/05/01 – 05/06</span>
+        </div>
+        <div class="cards-grid">
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🤖</div>
+              <div class="card-meta">
+                <div class="card-name">Gemini 2.5 Pro</div>
+                <div class="card-url">gemini.google.com</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-app">📱 APP</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">Google 最强多模态 AI 模型，支持超长上下文窗口（100 万 Token），深度推理能力媲美 GPT-4o</div>
+            <div class="card-footer">
+              <span class="card-cat">🤖 AI 工具</span>
+              <span class="card-date">5月5日</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">📓</div>
+              <div class="card-meta">
+                <div class="card-name">NotebookLM</div>
+                <div class="card-url">notebooklm.google</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费</span>
+            </div>
+            <div class="card-desc">Google AI 驱动的研究笔记工具，上传文档后可直接对话提问，自动生成摘要与播客音频</div>
+            <div class="card-footer">
+              <span class="card-cat">📊 办公效率</span>
+              <span class="card-date">5月3日</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">⚡</div>
+              <div class="card-meta">
+                <div class="card-name">Bolt.new</div>
+                <div class="card-url">bolt.new</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">StackBlitz 出品的 AI 全栈开发平台，在浏览器内运行完整 Node.js 环境，一句话生成可运行项目</div>
+            <div class="card-footer">
+              <span class="card-cat">💻 开发者</span>
+              <span class="card-date">5月1日</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- This month -->
+      <div class="timeline-section">
+        <div class="timeline-header">
+          <div class="timeline-dot" style="background:var(--accent3);box-shadow:0 0 8px rgba(245,158,11,0.5);"></div>
+          <span class="timeline-title">本月上线</span>
+          <span class="timeline-count">4 个工具</span>
+          <span class="timeline-date">2026年4月</span>
+        </div>
+        <div class="cards-grid">
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🌊</div>
+              <div class="card-meta">
+                <div class="card-name">Windsurf</div>
+                <div class="card-url">windsurf.ai</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">Codeium 推出的新一代 AI IDE，主打 Cascade 智能体能力，可自主规划并完成复杂开发任务</div>
+            <div class="card-footer">
+              <span class="card-cat">💻 开发者</span>
+              <span class="card-date">4月28日</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🤖</div>
+              <div class="card-meta">
+                <div class="card-name">Devin</div>
+                <div class="card-url">cognition.ai</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">付费</span>
+            </div>
+            <div class="card-desc">全球首个 AI 软件工程师，可独立完成端到端软件开发任务，包括写代码、修 Bug、部署上线</div>
+            <div class="card-footer">
+              <span class="card-cat">💻 开发者</span>
+              <span class="card-date">4月22日</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🎨</div>
+              <div class="card-meta">
+                <div class="card-name">v0 by Vercel</div>
+                <div class="card-url">v0.dev</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">Vercel 出品的 AI UI 代码生成工具，描述界面需求即可生成 React 组件代码，支持 shadcn/ui</div>
+            <div class="card-footer">
+              <span class="card-cat">💻 开发者</span>
+              <span class="card-date">4月15日</span>
+            </div>
+          </div>
+
+          <div class="new-card">
+            <div class="card-header">
+              <div class="card-logo">🎞</div>
+              <div class="card-meta">
+                <div class="card-name">Runway Gen-4</div>
+                <div class="card-url">runway.com</div>
+              </div>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-pc">🖥 PC 端</span>
+              <span class="badge badge-free">免费/付费</span>
+            </div>
+            <div class="card-desc">专业级 AI 视频生成平台，Gen-4 新版本支持角色一致性与场景控制，广受影视创作者青睐</div>
+            <div class="card-footer">
+              <span class="card-cat">🎬 视频影音</span>
+              <span class="card-date">4月8日</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 WebVerse · 收录全球优质工具 · <a href="#">提交网站</a> · <a href="#">关于我们</a></p>
+  </footer>
+
+  <script>
+    function switchChip(el) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+    document.querySelectorAll('.cat-item a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.cat-item a').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

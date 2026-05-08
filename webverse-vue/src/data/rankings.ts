@@ -1,0 +1,55 @@
+import type { PodiumItem, RankItem } from '@/types'
+
+export const PODIUM: PodiumItem[] = [
+  {
+    rank: 2,
+    id: 'midjourney',
+    name: 'Midjourney',
+    icon: '🎨',
+    url: 'midjourney.com',
+    desc: 'AI 图像生成领军产品，艺术风格出众',
+    badges: ['pc', 'paid'],
+    category: 'ai',
+    score: 87311,
+    changePercent: '↑ 3.1%',
+  },
+  {
+    rank: 1,
+    id: 'chatgpt',
+    name: 'ChatGPT',
+    icon: '🤖',
+    url: 'chatgpt.com',
+    desc: 'OpenAI 出品的对话式 AI 助手，全球用户超 2 亿',
+    badges: ['pc', 'app', 'freepaid'],
+    category: 'ai',
+    score: 98420,
+    changePercent: '↑ 5.2%',
+  },
+  {
+    rank: 3,
+    id: 'claude',
+    name: 'Claude',
+    icon: '🔮',
+    url: 'claude.ai',
+    desc: 'Anthropic 出品的安全对齐 AI，长文本处理能力强',
+    badges: ['pc', 'app', 'freepaid'],
+    category: 'ai',
+    score: 76209,
+    changePercent: '↑ 8.7%',
+  },
+]
+
+export const RANK_LIST: RankItem[] = [
+  { rank: 4,  id: 'github-copilot', name: 'GitHub Copilot', icon: '⚡', url: 'github.com/copilot', desc: 'AI 代码补全工具，集成于 VS Code / JetBrains，支持多语言', badges: ['pc', 'paid'],       category: 'dev',    score: 71800, trend: 'up',   trendValue: 2 },
+  { rank: 5,  id: 'figma',      name: 'Figma',          icon: '🎨', url: 'figma.com',          desc: '协作式 UI/UX 设计工具，设计师与开发者首选',            badges: ['pc', 'app', 'free'], category: 'design', score: 68400, trend: 'same' },
+  { rank: 6,  id: 'notion',     name: 'Notion',         icon: '📝', url: 'notion.so',          desc: '全能笔记与知识管理平台，团队协作一体化',                 badges: ['pc', 'app'],         category: 'office', score: 62100, trend: 'down', trendValue: 1 },
+  { rank: 7,  id: 'vscode-web', name: 'VS Code Web',    icon: '🖥', url: 'vscode.dev',         desc: '微软出品，在线版 VS Code，无需安装即可编码',             badges: ['pc', 'free'],        category: 'dev',    score: 59300, trend: 'up',   trendValue: 3 },
+  { rank: 8,  id: 'vercel',     name: 'Vercel',         icon: '🚀', url: 'vercel.com',         desc: '前端部署与 Serverless 平台，Next.js 官方推荐',           badges: ['pc', 'freepaid'],    category: 'dev',    score: 54800, trend: 'up',   trendValue: 1 },
+  { rank: 9,  id: 'linear',     name: 'Linear',         icon: '🗂', url: 'linear.app',         desc: '新一代项目管理工具，极致流畅，深受科技团队喜爱',          badges: ['pc', 'app'],         category: 'office', score: 51200, trend: 'same' },
+  { rank: 10, id: 'perplexity', name: 'Perplexity AI',  icon: '🔍', url: 'perplexity.ai',      desc: 'AI 搜索引擎，实时联网，提供带引用来源的精准答案',          badges: ['pc', 'freepaid'],    category: 'ai',     score: 48900, trend: 'up',   trendValue: 2 },
+  { rank: 11, id: 'loom',       name: 'Loom',           icon: '🎬', url: 'loom.com',           desc: '屏幕录制与异步视频沟通工具，远程团队首选',               badges: ['pc', 'app', 'freepaid'], category: 'office', score: 45600, trend: 'down', trendValue: 2 },
+  { rank: 12, id: 'framer',     name: 'Framer',         icon: '🖼', url: 'framer.com',         desc: 'AI 驱动的网站设计与发布工具，无需写代码',               badges: ['pc', 'freepaid'],    category: 'design', score: 42300, trend: 'new' },
+  { rank: 13, id: 'cursor',     name: 'Cursor',         icon: '✏️', url: 'cursor.com',         desc: 'AI 优先的代码编辑器，深度集成大模型，代码生成能力强',     badges: ['pc', 'freepaid'],    category: 'dev',    score: 39800, trend: 'up',   trendValue: 4 },
+  { rank: 14, id: 'replit',     name: 'Replit',         icon: '💻', url: 'replit.com',         desc: '在线编程环境与协作平台，支持 50+ 编程语言',              badges: ['pc', 'app', 'freepaid'], category: 'dev',  score: 37200, trend: 'down', trendValue: 1 },
+  { rank: 15, id: 'supabase',   name: 'Supabase',       icon: '🗄', url: 'supabase.com',       desc: '开源 Firebase 替代品，PostgreSQL + 实时数据库',         badges: ['pc', 'freepaid'],    category: 'dev',    score: 34600, trend: 'up',   trendValue: 2 },
+]

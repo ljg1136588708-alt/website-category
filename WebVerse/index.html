@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebVerse — 全球网站与APP导航</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(139,92,246,0.5);
+      --text: #f0f0ff;
+      --muted: #6b7280;
+      --accent1: #8b5cf6;
+      --accent2: #06b6d4;
+      --accent3: #f59e0b;
+      --gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      --glow: 0 0 40px rgba(139,92,246,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Ambient blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 600px; height: 600px; background: #8b5cf6; top: -200px; left: -200px; }
+    .blob-2 { width: 500px; height: 500px; background: #06b6d4; bottom: -150px; right: -150px; }
+    .blob-3 { width: 400px; height: 400px; background: #f59e0b; top: 40%; left: 40%; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10,10,15,0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--gradient);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .logo span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-links a.active { color: var(--text); background: rgba(139,92,246,0.15); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .submit-btn {
+      background: var(--gradient);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .submit-btn:hover { opacity: 0.85; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 80px 32px 60px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12px;
+      color: var(--accent1);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .hero-badge::before { content: '✦'; font-size: 10px; }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+    h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    /* ── AI Search Box ── */
+    .ai-search {
+      max-width: 680px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+    .ai-search-inner {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ai-search-inner:focus-within {
+      border-color: var(--accent1);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+    }
+    .ai-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2));
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .ai-search input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+    }
+    .ai-search input::placeholder { color: var(--muted); }
+    .ai-send {
+      background: var(--gradient);
+      border: none;
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .ai-send:hover { opacity: 0.85; transform: scale(1.05); }
+
+    .ai-tips {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tip-chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tip-chip:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+    /* ── Stats bar ── */
+    .stats {
+      position: relative; z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.01);
+      margin-bottom: 48px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── Main layout ── */
+    .main {
+      position: relative; z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 32px;
+    }
+
+    /* ── Sidebar categories ── */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+    .cat-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .cat-item a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .cat-item a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .cat-item a.active { color: var(--text); background: rgba(139,92,246,0.12); }
+    .cat-item a.active .cat-icon { color: var(--accent1); }
+    .cat-icon { font-size: 16px; width: 20px; text-align: center; }
+    .cat-count {
+      margin-left: auto;
+      font-size: 11px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      padding: 1px 8px;
+      color: var(--muted);
+    }
+
+    /* ── Content area ── */
+    .content {}
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .filter-tab {
+      padding: 6px 16px;
+      border-radius: 7px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+    }
+    .filter-tab.active {
+      background: rgba(139,92,246,0.2);
+      color: var(--text);
+    }
+    .filter-tab:hover:not(.active) { color: var(--text); }
+
+    .filter-sep { color: var(--border); }
+
+    .sort-select {
+      margin-left: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 7px 12px;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* ── Section heading ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .section-head .tag {
+      font-size: 11px;
+      background: rgba(139,92,246,0.15);
+      color: var(--accent1);
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--glow);
+    }
+    .card:hover::before { opacity: 0.03; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .card-logo {
+      width: 44px; height: 44px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+    .card-meta { flex: 1; min-width: 0; }
+    .card-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-url { font-size: 11px; color: var(--muted); }
+
+    /* Platform badges */
+    .badges {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    .badge-pc {
+      background: rgba(6,182,212,0.1);
+      color: var(--accent2);
+      border: 1px solid rgba(6,182,212,0.2);
+    }
+    .badge-app {
+      background: rgba(139,92,246,0.1);
+      color: var(--accent1);
+      border: 1px solid rgba(139,92,246,0.2);
+    }
+    .badge-free {
+      background: rgba(16,185,129,0.1);
+      color: #10b981;
+      border: 1px solid rgba(16,185,129,0.2);
+    }
+    .badge-cn {
+      background: rgba(245,158,11,0.1);
+      color: var(--accent3);
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Related platform note */
+    .related-note {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      position: relative;
+    }
+    .related-link {
+      color: var(--accent1);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: opacity 0.2s;
+    }
+    .related-link:hover { opacity: 0.7; }
+
+    /* ── Featured / Bento row ── */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .bento-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .bento-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--glow);
+    }
+    .bento-card.featured {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(6,182,212,0.05));
+      border-color: rgba(139,92,246,0.2);
+    }
+    .bento-card .big-icon {
+      font-size: 42px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .bento-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .bento-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .bento-card .bento-badges {
+      display: flex; gap: 6px; margin: 12px 0 0;
+    }
+    .bento-bg-glow {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      bottom: -60px; right: -60px;
+      pointer-events: none;
+    }
+
+    /* ── AI Response panel ── */
+    .ai-panel {
+      display: none;
+      max-width: 680px;
+      margin: 0 auto 20px;
+      background: var(--card);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .ai-panel.show { display: block; }
+    .ai-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--accent1);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .ai-thinking {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent1);
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--accent1); text-decoration: none; }
+
+    /* ── Bookmark button ── */
+    .fav-btn {
+      position: absolute;
+      top: 0; right: 0;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      opacity: 0;
+      z-index: 2;
+    }
+    .card:hover .fav-btn { opacity: 1; }
+    .fav-btn.saved { opacity: 1; color: var(--accent3); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+    .fav-btn:hover { color: var(--accent3); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-card.featured { grid-column: span 1; }
+      .stats { gap: 24px; }
+      h1 { letter-spacing: -1px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo" style="text-decoration:none;color:inherit;">
+      <div class="logo-icon">🌐</div>
+      <span>WebVerse</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">发现</a></li>
+      <li><a href="ranking.html">排行榜</a></li>
+      <li><a href="new.html">新上线</a></li>
+      <li><a href="favorites.html">收藏夹</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="submit-btn">+ 提交网站</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">全球收录 · 持续更新</div>
+    <h1>发现全球<br/><span class="gradient-text">最好用的工具</span></h1>
+    <p class="hero-sub">收录全球热门网站与 APP，智能分类，一站找到你需要的一切</p>
+
+    <!-- AI Search -->
+    <div class="ai-search">
+      <div class="ai-search-inner">
+        <div class="ai-icon">✦</div>
+        <input id="aiInput" type="text" placeholder="描述你的需求，AI 帮你找工具... 例如：免费的在线视频剪辑工具" />
+        <button class="ai-send" onclick="triggerAI()">↑</button>
+      </div>
+    </div>
+
+    <!-- AI tips -->
+    <div class="ai-tips">
+      <span class="tip-chip" onclick="fillTip(this)">🎬 视频剪辑工具</span>
+      <span class="tip-chip" onclick="fillTip(this)">📊 数据可视化</span>
+      <span class="tip-chip" onclick="fillTip(this)">🎨 AI 设计工具</span>
+      <span class="tip-chip" onclick="fillTip(this)">💻 开发者工具</span>
+      <span class="tip-chip" onclick="fillTip(this)">📱 有 APP 的效率工具</span>
+    </div>
+
+    <!-- AI Response panel -->
+    <div class="ai-panel" id="aiPanel">
+      <div class="ai-panel-header">
+        <span>✦</span> AI 正在为你查找
+        <div class="ai-thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div id="aiResult" style="font-size:14px;color:#a0a0b0;line-height:1.7;"></div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-num">12,400+</div>
+      <div class="stat-label">收录工具</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">86</div>
+      <div class="stat-label">细分分类</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3,200+</div>
+      <div class="stat-label">含 APP 版</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">42</div>
+      <div class="stat-label">语言/地区</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-title">全部分类</div>
+      <ul class="cat-list">
+        <li class="cat-item"><a href="#" class="active"><span class="cat-icon">⚡</span>全部<span class="cat-count">12.4k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🤖</span>AI 工具<span class="cat-count">1.8k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎨</span>设计创作<span class="cat-count">980</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">💻</span>开发者<span class="cat-count">2.1k</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📊</span>办公效率<span class="cat-count">760</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎬</span>视频影音<span class="cat-count">540</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📰</span>资讯阅读<span class="cat-count">430</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🛒</span>电商购物<span class="cat-count">380</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🎮</span>游戏娱乐<span class="cat-count">620</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">📚</span>教育学习<span class="cat-count">870</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">💰</span>金融理财<span class="cat-count">290</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🌍</span>社交媒体<span class="cat-count">340</span></a></li>
+        <li class="cat-item"><a href="#"><span class="cat-icon">🔒</span>安全隐私<span class="cat-count">180</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Featured Bento -->
+      <div class="section-head">
+        <h2>✦ 精选推荐</h2>
+        <span class="tag">编辑精选</span>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card featured">
+          <div class="bento-bg-glow" style="background:#8b5cf6;"></div>
+          <span class="big-icon">🤖</span>
+          <h3>ChatGPT</h3>
+          <p>OpenAI 出品的对话式 AI 助手，支持文本、图像、代码等多模态交互，全球用户超 2 亿</p>
+          <div class="bento-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费/付费</span>
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-bg-glow" style="background:#06b6d4;"></div>
+          <span class="big-icon">🎨</span>
+          <h3>Figma</h3>
+          <p>协作式 UI 设计工具，设计师首选</p>
+          <div class="bento-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-free">免费</span>
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-bg-glow" style="background:#f59e0b;"></div>
+          <span class="big-icon">📝</span>
+          <h3>Notion</h3>
+          <p>全能笔记与知识管理平台</p>
+          <div class="bento-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-bg-glow" style="background:#10b981;"></div>
+          <span class="big-icon">🎬</span>
+          <h3>CapCut</h3>
+          <p>字节跳动旗下热门视频剪辑工具</p>
+          <div class="bento-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费</span>
+          </div>
+        </div>
+        <div class="bento-card featured">
+          <div class="bento-bg-glow" style="background:#06b6d4;"></div>
+          <span class="big-icon">⚡</span>
+          <h3>Linear</h3>
+          <p>新一代项目管理工具，极致流畅的产品体验，深受科技公司和创业团队喜爱</p>
+          <div class="bento-badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active">全部</button>
+          <button class="filter-tab">🖥 PC 端</button>
+          <button class="filter-tab">📱 APP</button>
+          <button class="filter-tab">🆓 免费</button>
+        </div>
+        <select class="sort-select">
+          <option>最热门</option>
+          <option>最新上线</option>
+          <option>评分最高</option>
+          <option>最近更新</option>
+        </select>
+      </div>
+
+      <div class="section-head">
+        <h2>🔥 本周热门</h2>
+        <span class="tag">1,280 个工具</span>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards-grid">
+
+        <!-- Card 1: PC only -->
+        <div class="card" data-id="spotify" data-name="Spotify" data-icon="🎵" data-url="spotify.com" data-desc="全球最大的音乐流媒体平台，海量曲库，支持播客，个性化推荐算法出色" data-badges="pc,app,freepaid" data-category="视频影音">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">🎵</div>
+            <div class="card-meta">
+              <div class="card-name">Spotify</div>
+              <div class="card-url">spotify.com</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费/付费</span>
+          </div>
+          <div class="card-desc">全球最大的音乐流媒体平台，海量曲库，支持播客，个性化推荐算法出色</div>
+          <div class="related-note">
+            📱 也有 APP 版 →
+            <a class="related-link" href="#">查看 APP 版 ↗</a>
+          </div>
+        </div>
+
+        <!-- Card 2: APP only -->
+        <div class="card" data-id="instagram" data-name="Instagram" data-icon="📸" data-url="instagram.com" data-desc="全球最受欢迎的图片与短视频社交平台，月活超 20 亿用户，Reels 功能增长迅猛" data-badges="app,free" data-category="社交媒体">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">📸</div>
+            <div class="card-meta">
+              <div class="card-name">Instagram</div>
+              <div class="card-url">instagram.com</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费</span>
+          </div>
+          <div class="card-desc">全球最受欢迎的图片与短视频社交平台，月活超 20 亿用户，Reels 功能增长迅猛</div>
+          <div class="related-note">
+            🖥 也有 PC 端 →
+            <a class="related-link" href="#">查看 PC 版 ↗</a>
+          </div>
+        </div>
+
+        <!-- Card 3: PC only, no APP -->
+        <div class="card" data-id="perplexity" data-name="Perplexity AI" data-icon="🔍" data-url="perplexity.ai" data-desc="AI 驱动的搜索引擎，实时联网，给出有来源引用的精准答案，被誉为 Google 挑战者" data-badges="pc,freepaid" data-category="AI 工具">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">🔍</div>
+            <div class="card-meta">
+              <div class="card-name">Perplexity AI</div>
+              <div class="card-url">perplexity.ai</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-free">免费/付费</span>
+          </div>
+          <div class="card-desc">AI 驱动的搜索引擎，实时联网，给出有来源引用的精准答案，被誉为 Google 挑战者</div>
+          <!-- No related note since no APP -->
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card" data-id="discord" data-name="Discord" data-icon="🎮" data-url="discord.com" data-desc="游戏玩家与创意社区首选通讯工具，频道、语音、视频一体化，服务器生态丰富" data-badges="pc,app,free,cn" data-category="社交媒体">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">🎮</div>
+            <div class="card-meta">
+              <div class="card-name">Discord</div>
+              <div class="card-url">discord.com</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费</span>
+            <span class="badge badge-cn">⚠ 需代理</span>
+          </div>
+          <div class="card-desc">游戏玩家与创意社区首选通讯工具，频道、语音、视频一体化，服务器生态丰富</div>
+          <div class="related-note">
+            📱 也有 APP 版 →
+            <a class="related-link" href="#">查看 APP 版 ↗</a>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card" data-id="substack" data-name="Substack" data-icon="✍️" data-url="substack.com" data-desc="独立创作者的新闻简报与付费订阅平台，支持文字、播客、视频，创作者经济代表" data-badges="pc,app,freepaid" data-category="资讯阅读">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">✍️</div>
+            <div class="card-meta">
+              <div class="card-name">Substack</div>
+              <div class="card-url">substack.com</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-pc">🖥 PC 端</span>
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费/付费</span>
+          </div>
+          <div class="card-desc">独立创作者的新闻简报与付费订阅平台，支持文字、播客、视频，创作者经济代表</div>
+          <div class="related-note">
+            📱 也有 APP 版 →
+            <a class="related-link" href="#">查看 APP 版 ↗</a>
+          </div>
+        </div>
+
+        <!-- Card 6: APP only, no PC -->
+        <div class="card" data-id="strava" data-name="Strava" data-icon="🏃" data-url="strava.com" data-desc="运动爱好者社交平台，跑步、骑行轨迹记录，连接全球运动员社区，数据分析专业" data-badges="app,freepaid" data-category="运动健康">
+          <button class="fav-btn" onclick="toggleFav(this)" title="收藏">☆</button>
+          <div class="card-header">
+            <div class="card-logo">🏃</div>
+            <div class="card-meta">
+              <div class="card-name">Strava</div>
+              <div class="card-url">strava.com</div>
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-app">📱 APP</span>
+            <span class="badge badge-free">免费/付费</span>
+          </div>
+          <div class="card-desc">运动爱好者社交平台，跑步、骑行轨迹记录，连接全球运动员社区，数据分析专业</div>
+          <!-- No PC version -->
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 WebVerse · 收录全球优质工具 · <a href="#">提交网站</a> · <a href="#">关于我们</a></p>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'webverse_favorites';
+    function getFavs() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+    function saveFavs(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+    function toggleFav(btn) {
+      btn.stopPropagation && btn.stopPropagation();
+      const card = btn.closest('[data-id]');
+      if (!card) return;
+      const id = card.dataset.id;
+      let list = getFavs();
+      const idx = list.findIndex(i => i.id === id);
+      if (idx >= 0) {
+        list.splice(idx, 1);
+        btn.textContent = '☆';
+        btn.classList.remove('saved');
+        btn.title = '收藏';
+      } else {
+        list.unshift({
+          id,
+          name: card.dataset.name,
+          icon: card.dataset.icon,
+          url: card.dataset.url,
+          desc: card.dataset.desc,
+          badges: (card.dataset.badges || '').split(',').filter(Boolean),
+          category: card.dataset.category || '',
+          savedAt: new Date().toISOString(),
+        });
+        btn.textContent = '★';
+        btn.classList.add('saved');
+        btn.title = '取消收藏';
+      }
+      saveFavs(list);
+    }
+
+    // Init fav button states on load
+    function initFavBtns() {
+      const list = getFavs();
+      const ids = new Set(list.map(i => i.id));
+      document.querySelectorAll('[data-id] .fav-btn').forEach(btn => {
+        const id = btn.closest('[data-id]').dataset.id;
+        if (ids.has(id)) {
+          btn.textContent = '★';
+          btn.classList.add('saved');
+          btn.title = '取消收藏';
+        }
+      });
+    }
+    initFavBtns();
+
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Category links
+    document.querySelectorAll('.cat-item a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.cat-item a').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // AI tip chips
+    function fillTip(el) {
+      document.getElementById('aiInput').value = el.textContent.replace(/^[^\s]+\s/, '');
+    }
+
+    // AI search demo
+    function triggerAI() {
+      const val = document.getElementById('aiInput').value.trim();
+      if (!val) return;
+      const panel = document.getElementById('aiPanel');
+      const result = document.getElementById('aiResult');
+      panel.classList.add('show');
+      result.textContent = '';
+      const response = `根据你的需求，为你推荐以下工具：\n\n1. CapCut（剪映国际版）— 免费，PC + APP 均有，适合新手\n2. DaVinci Resolve — 专业级免费剪辑，PC 端\n3. Adobe Premiere Rush — 轻量版 Premiere，PC + APP\n\n以上工具均已收录，点击卡片可查看详情。`;
+      let i = 0;
+      const timer = setInterval(() => {
+        result.textContent += response[i];
+        i++;
+        if (i >= response.length) clearInterval(timer);
+      }, 18);
+    }
+
+    document.getElementById('aiInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') triggerAI();
+    });
+  </script>
+</body>
+</html>

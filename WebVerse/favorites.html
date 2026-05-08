@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>收藏夹 — WebVerse</title>
+  <style>
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --card: #16161f;
+      --border: rgba(255,255,255,0.07); --border-hover: rgba(139,92,246,0.5);
+      --text: #f0f0ff; --muted: #6b7280;
+      --accent1: #8b5cf6; --accent2: #06b6d4; --accent3: #f59e0b;
+      --gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      --glow: 0 0 40px rgba(139,92,246,0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system,'Inter','Segoe UI',sans-serif; min-height: 100vh; overflow-x: hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+    .blob { position:fixed; border-radius:50%; filter:blur(120px); opacity:0.12; pointer-events:none; z-index:0; }
+    .blob-1 { width:600px;height:600px;background:#8b5cf6;top:-200px;left:-200px; }
+    .blob-2 { width:500px;height:500px;background:#06b6d4;bottom:-150px;right:-150px; }
+    .blob-3 { width:400px;height:400px;background:#f59e0b;top:40%;left:40%; }
+
+    nav { position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between; }
+    .logo { display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;letter-spacing:-0.5px;text-decoration:none;color:var(--text); }
+    .logo-icon { width:32px;height:32px;background:var(--gradient);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px; }
+    .logo span { background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .nav-links { display:flex;gap:8px;list-style:none; }
+    .nav-links a { text-decoration:none;color:var(--muted);font-size:14px;padding:6px 14px;border-radius:8px;transition:all 0.2s; }
+    .nav-links a:hover { color:var(--text);background:rgba(255,255,255,0.05); }
+    .nav-links a.active { color:var(--text);background:rgba(139,92,246,0.15); }
+    .submit-btn { background:var(--gradient);border:none;color:white;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s; }
+    .submit-btn:hover { opacity:0.85; }
+
+    .badge { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px; }
+    .badge-pc { background:rgba(6,182,212,0.1);color:var(--accent2);border:1px solid rgba(6,182,212,0.2); }
+    .badge-app { background:rgba(139,92,246,0.1);color:var(--accent1);border:1px solid rgba(139,92,246,0.2); }
+    .badge-free { background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2); }
+    .badge-cn { background:rgba(245,158,11,0.1);color:var(--accent3);border:1px solid rgba(245,158,11,0.2); }
+
+    footer { position:relative;z-index:1;border-top:1px solid var(--border);padding:32px;text-align:center;color:var(--muted);font-size:13px; }
+    footer a { color:var(--accent1);text-decoration:none; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:3px; }
+
+    /* ── Page hero ── */
+    .page-hero { position:relative;z-index:1;padding:48px 32px 36px; }
+    .hero-inner { max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap; }
+    .hero-left {}
+    .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:100px;padding:5px 14px;font-size:12px;color:var(--accent1);margin-bottom:14px;font-weight:500; }
+    .page-hero h1 { font-size:clamp(24px,3vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:8px; }
+    .page-hero p { color:var(--muted);font-size:14px;line-height:1.6; }
+    .hero-stats { display:flex;gap:24px; }
+    .h-stat { text-align:center; }
+    .h-stat-num { font-size:24px;font-weight:800;letter-spacing:-1px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .h-stat-lbl { font-size:11px;color:var(--muted);margin-top:2px; }
+
+    /* ── Layout ── */
+    .main { position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:220px 1fr;gap:32px; }
+
+    /* ── Collections sidebar ── */
+    .col-sidebar { position:sticky;top:80px;height:fit-content; }
+    .col-title { font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:12px; }
+    .col-list { list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:20px; }
+    .col-item a { display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:14px;transition:all 0.2s; }
+    .col-item a:hover { color:var(--text);background:rgba(255,255,255,0.04); }
+    .col-item a.active { color:var(--text);background:rgba(139,92,246,0.12); }
+    .col-item a.active .col-icon { color:var(--accent1); }
+    .col-icon { font-size:16px;width:20px;text-align:center; }
+    .col-count { margin-left:auto;font-size:11px;background:rgba(255,255,255,0.06);border-radius:100px;padding:1px 8px;color:var(--muted); }
+    .new-col-btn { width:100%;padding:9px 12px;border-radius:10px;background:rgba(139,92,246,0.08);border:1px dashed rgba(139,92,246,0.25);color:var(--accent1);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;text-align:left; }
+    .new-col-btn:hover { background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.4); }
+
+    /* ── Content header ── */
+    .content-header { display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap; }
+    .section-head { display:flex;align-items:center;gap:10px; }
+    .section-head h2 { font-size:16px;font-weight:700;letter-spacing:-0.3px; }
+    .tag { font-size:11px;background:rgba(139,92,246,0.15);color:var(--accent1);padding:2px 10px;border-radius:100px;font-weight:600; }
+    .sort-select { margin-left:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;padding:7px 12px;outline:none;font-family:inherit;cursor:pointer; }
+
+    /* ── Cards grid ── */
+    .cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; }
+    .fav-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden; }
+    .fav-card::before { content:'';position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity 0.25s; }
+    .fav-card:hover { border-color:var(--border-hover);transform:translateY(-2px);box-shadow:var(--glow); }
+    .fav-card:hover::before { opacity:0.03; }
+    .card-header { display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;position:relative; }
+    .card-logo { width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid var(--border); }
+    .card-meta { flex:1;min-width:0; }
+    .card-name { font-size:15px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .card-url { font-size:11px;color:var(--muted); }
+    .card-remove { position:absolute;top:0;right:0;width:28px;height:28px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;opacity:0;flex-shrink:0; }
+    .fav-card:hover .card-remove { opacity:1; }
+    .card-remove:hover { background:rgba(239,68,68,0.2); }
+    .card-badges { display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;position:relative; }
+    .card-desc { font-size:13px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;position:relative; }
+    .card-footer { margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:relative; }
+    .card-saved-at { font-size:11px;color:var(--muted); }
+    .card-cat-badge { font-size:11px;color:var(--muted); }
+
+    /* ── Empty state ── */
+    .empty-state { display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 32px;min-height:400px; }
+    .empty-state.show { display:flex; }
+    .empty-icon { font-size:72px;margin-bottom:24px;opacity:0.6;filter:grayscale(0.3); }
+    .empty-title { font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:10px; }
+    .empty-desc { font-size:14px;color:var(--muted);max-width:360px;line-height:1.7;margin-bottom:28px; }
+    .empty-cta { display:inline-flex;align-items:center;gap:8px;background:var(--gradient);color:white;padding:12px 24px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;transition:opacity 0.2s; }
+    .empty-cta:hover { opacity:0.85; }
+
+    /* ── Cards container ── */
+    #favGrid.show { display:grid; }
+    #favGrid { display:none; }
+
+    @media (max-width:768px) {
+      .main { grid-template-columns:1fr; }
+      .col-sidebar { display:none; }
+      .hero-stats { gap:16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🌐</div>
+      <span>WebVerse</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">发现</a></li>
+      <li><a href="ranking.html">排行榜</a></li>
+      <li><a href="new.html">新上线</a></li>
+      <li><a href="favorites.html" class="active">收藏夹</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="submit-btn">+ 提交网站</button>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-badge">⭐ 我的收藏</div>
+        <h1>收藏夹</h1>
+        <p>保存你喜欢的工具，随时快速访问</p>
+      </div>
+      <div class="hero-stats" id="heroStats" style="display:none;">
+        <div class="h-stat">
+          <div class="h-stat-num" id="statTotal">0</div>
+          <div class="h-stat-lbl">已收藏</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-num" id="statCats">0</div>
+          <div class="h-stat-lbl">分类</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="main">
+    <aside class="col-sidebar">
+      <div class="col-title">我的合集</div>
+      <ul class="col-list" id="colList">
+        <li class="col-item"><a href="#" class="active" data-col="all"><span class="col-icon">⭐</span>全部收藏<span class="col-count" id="colAllCount">0</span></a></li>
+      </ul>
+      <button class="new-col-btn">+ 新建合集</button>
+    </aside>
+
+    <div class="content">
+      <div class="content-header">
+        <div class="section-head">
+          <h2>⭐ 全部收藏</h2>
+          <span class="tag" id="contentCount">0 个工具</span>
+        </div>
+        <select class="sort-select" id="sortSelect">
+          <option value="newest">最近收藏</option>
+          <option value="oldest">最早收藏</option>
+          <option value="name">按名称</option>
+        </select>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state show" id="emptyState">
+        <div class="empty-icon">🌟</div>
+        <div class="empty-title">还没有收藏任何工具</div>
+        <div class="empty-desc">浏览工具时点击 ☆ 收藏按钮，将你喜欢的工具保存在这里，方便随时访问</div>
+        <a href="index.html" class="empty-cta">
+          <span>🔍</span> 去发现好工具
+        </a>
+      </div>
+
+      <!-- Favorites grid -->
+      <div class="cards-grid" id="favGrid"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 WebVerse · 收录全球优质工具 · <a href="#">提交网站</a> · <a href="#">关于我们</a></p>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'webverse_favorites';
+
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveFavorites(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function removeFavorite(id) {
+      const list = getFavorites().filter(item => item.id !== id);
+      saveFavorites(list);
+      render();
+    }
+
+    function badgeHtml(key) {
+      const map = {
+        pc: '<span class="badge badge-pc">🖥 PC 端</span>',
+        app: '<span class="badge badge-app">📱 APP</span>',
+        free: '<span class="badge badge-free">免费</span>',
+        freepaid: '<span class="badge badge-free">免费/付费</span>',
+        paid: '<span class="badge badge-free">付费</span>',
+        cn: '<span class="badge badge-cn">⚠ 需代理</span>',
+      };
+      return map[key] || '';
+    }
+
+    function render() {
+      let list = getFavorites();
+      const sort = document.getElementById('sortSelect').value;
+
+      if (sort === 'oldest') list = [...list].reverse();
+      else if (sort === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+
+      const empty = document.getElementById('emptyState');
+      const grid = document.getElementById('favGrid');
+      const countEl = document.getElementById('contentCount');
+      const statTotal = document.getElementById('statTotal');
+      const statCats = document.getElementById('statCats');
+      const heroStats = document.getElementById('heroStats');
+      const colAllCount = document.getElementById('colAllCount');
+
+      colAllCount.textContent = list.length;
+      countEl.textContent = `${list.length} 个工具`;
+      statTotal.textContent = list.length;
+      const cats = new Set(list.map(i => i.category).filter(Boolean));
+      statCats.textContent = cats.size || 0;
+      heroStats.style.display = list.length ? 'flex' : 'none';
+
+      if (list.length === 0) {
+        empty.classList.add('show');
+        grid.classList.remove('show');
+        return;
+      }
+
+      empty.classList.remove('show');
+      grid.classList.add('show');
+
+      grid.innerHTML = list.map(item => {
+        const badgesHtml = (item.badges || []).map(badgeHtml).join('');
+        const savedDate = item.savedAt ? new Date(item.savedAt).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) : '';
+        return `
+          <div class="fav-card">
+            <div class="card-header">
+              <div class="card-logo">${item.icon || '🔗'}</div>
+              <div class="card-meta">
+                <div class="card-name">${item.name}</div>
+                <div class="card-url">${item.url || ''}</div>
+              </div>
+              <button class="card-remove" onclick="removeFavorite('${item.id}')" title="取消收藏">✕</button>
+            </div>
+            <div class="card-badges">${badgesHtml}</div>
+            <div class="card-desc">${item.desc || ''}</div>
+            <div class="card-footer">
+              <span class="card-cat-badge">${item.category || ''}</span>
+              <span class="card-saved-at">${savedDate ? '收藏于 ' + savedDate : ''}</span>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Build collection sidebar from categories
+      const colList = document.getElementById('colList');
+      const catItems = [...cats].map(cat => `
+        <li class="col-item">
+          <a href="#" data-col="${cat}">
+            <span class="col-icon">📁</span>${cat}
+            <span class="col-count">${list.filter(i => i.category === cat).length}</span>
+          </a>
+        </li>`).join('');
+      colList.innerHTML = `
+        <li class="col-item"><a href="#" class="active" data-col="all"><span class="col-icon">⭐</span>全部收藏<span class="col-count">${list.length}</span></a></li>
+        ${catItems}`;
+
+      colList.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          colList.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+    }
+
+    document.getElementById('sortSelect').addEventListener('change', render);
+
+    render();
+  </script>
+</body>
+</html>
