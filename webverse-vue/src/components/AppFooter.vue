@@ -1,9 +1,6 @@
 <template>
   <footer>
-    <p>
-      {{ $t('common.copyright') }} ·
-      <a href="#">{{ $t('common.aboutUs') }}</a>
-    </p>
+    <p>{{ $t('common.copyright') }}</p>
   </footer>
 </template>
 
