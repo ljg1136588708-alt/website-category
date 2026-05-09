@@ -150,6 +150,7 @@ export default {
     submitSite: '提交网站',
     aboutUs: '关于我们',
     copyright: '© 2026 WebVerse. 保留所有权利.',
+    privacyPolicy: '隐私政策',
     new: 'NEW',
     loading: '加载中...',
     hasApp: '也有 APP 版',

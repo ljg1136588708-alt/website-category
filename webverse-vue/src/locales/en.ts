@@ -150,6 +150,7 @@ export default {
     submitSite: 'Submit Site',
     aboutUs: 'About',
     copyright: '© 2026 WebVerse. All rights reserved.',
+    privacyPolicy: 'Privacy Policy',
     new: 'NEW',
     loading: 'Loading...',
     hasApp: 'Also has APP',

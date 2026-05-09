@@ -1,6 +1,9 @@
 <template>
   <footer>
-    <p>{{ $t('common.copyright') }}</p>
+    <p>
+      {{ $t('common.copyright') }} ·
+      <RouterLink to="/privacy">{{ $t('common.privacyPolicy') }}</RouterLink>
+    </p>
   </footer>
 </template>
 
