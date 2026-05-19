@@ -158,7 +158,7 @@ const subcategoryChips = computed(() => {
 })
 
 const filteredTools = computed(() => {
-  const bentoIds = new Set(bento.value.map((t) => t.id))
+  const bentoIds = new Set(bento.value.map((item) => item.id))
   let list = toolList.value
 
   if (toolsStore.activeCategory !== 'all') {
@@ -169,9 +169,9 @@ const filteredTools = computed(() => {
   } else {
     list = list.filter((tool) => !bentoIds.has(tool.id))
   }
-  if (toolsStore.activeFilter === 'pc')   list = list.filter((t) => t.badges.includes('pc'))
-  if (toolsStore.activeFilter === 'app')  list = list.filter((t) => t.badges.includes('app'))
-  if (toolsStore.activeFilter === 'free') list = list.filter((t) => t.badges.includes('free') || t.badges.includes('freepaid'))
+  if (toolsStore.activeFilter === 'pc')   list = list.filter((tool) => tool.badges.includes('pc'))
+  if (toolsStore.activeFilter === 'app')  list = list.filter((tool) => tool.badges.includes('app'))
+  if (toolsStore.activeFilter === 'free') list = list.filter((tool) => tool.badges.includes('free') || tool.badges.includes('freepaid'))
 
   return list
 })

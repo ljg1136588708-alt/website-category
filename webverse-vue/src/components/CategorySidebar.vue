@@ -20,6 +20,8 @@
 <script setup lang="ts">
 import type { Category } from '@/types'
 
+defineOptions({ name: 'CategorySidebar' })
+
 defineProps<{
   categories: Category[]
   modelValue: string
@@ -29,10 +31,6 @@ defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [key: string]
 }>()
-</script>
-
-<script lang="ts">
-export default { name: 'CategorySidebar' }
 </script>
 
 <style scoped>
