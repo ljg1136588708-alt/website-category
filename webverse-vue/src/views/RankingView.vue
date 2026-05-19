@@ -174,7 +174,8 @@ h1 { font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1.5px; 
 .rank-row:hover::before { opacity: 1; }
 .rank-n { font-size: 16px; font-weight: 800; width: 30px; text-align: center; flex-shrink: 0; color: var(--muted); }
 .rank-n.hi { color: var(--text); }
-.rank-logo { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+.rank-logo { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); overflow: hidden; }
+.rank-logo :deep(.tool-logo) { width: 42px; height: 42px; }
 .rank-info { flex: 1; min-width: 0; }
 .rank-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
 .rank-desc { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
