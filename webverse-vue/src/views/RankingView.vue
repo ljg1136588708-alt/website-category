@@ -147,8 +147,9 @@ h1 { font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1.5px; 
 .podium-logo {
   width: 56px; height: 56px; margin: 0 auto 12px; flex-shrink: 0; font-size: 28px;
   border-radius: 14px; display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border); overflow: hidden;
 }
+.podium-logo :deep(.tool-logo) { width: 56px; height: 56px; }
 .podium-name { font-size: 17px; font-weight: 800; margin-bottom: 3px; }
 .podium-url { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
 .podium-score { font-size: 28px; font-weight: 900; letter-spacing: -1px; display: block; margin-bottom: 2px; }

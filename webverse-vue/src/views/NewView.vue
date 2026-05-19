@@ -186,8 +186,9 @@ h1 { font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1.5px; 
 .featured-logo {
   font-size: 64px; flex-shrink: 0; width: 96px; height: 96px;
   background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
+.featured-logo :deep(.tool-logo) { width: 96px; height: 96px; }
 .featured-body { flex: 1; min-width: 0; }
 .featured-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .featured-eyebrow-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #10b981; }

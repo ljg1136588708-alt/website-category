@@ -178,9 +178,11 @@ const pricingLabel = computed(() => {
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
   font-size: 32px;
   flex-shrink: 0;
 }
+.tool-icon :deep(.tool-logo) { width: 64px; height: 64px; }
 
 .tool-meta { display: flex; flex-direction: column; gap: 6px; }
 .tool-name { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin: 0; }
