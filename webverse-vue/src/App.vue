@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { theme } from 'ant-design-vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import enUS from 'ant-design-vue/es/locale/en_US'
@@ -22,6 +22,13 @@ const antLocale = computed(() => {
   const code = (i18n.global.locale as unknown as { value: string }).value
   return code === 'zh-CN' ? zhCN : enUS
 })
+
+// Sync <html lang> with current locale
+watch(
+  () => (i18n.global.locale as unknown as { value: string }).value,
+  (lang) => { document.documentElement.lang = lang },
+  { immediate: true },
+)
 
 const themeConfig = {
   algorithm: theme.darkAlgorithm,

@@ -13,6 +13,26 @@ const router = createRouter({
       name: 'privacy',
       component: () => import('@/views/PrivacyView.vue'),
     },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/AboutView.vue'),
+    },
+    {
+      path: '/tool/:id',
+      name: 'toolDetail',
+      component: () => import('@/views/ToolDetailView.vue'),
+    },
+    {
+      path: '/ranking',
+      name: 'ranking',
+      component: () => import('@/views/RankingView.vue'),
+    },
+    {
+      path: '/new',
+      name: 'newTools',
+      component: () => import('@/views/NewView.vue'),
+    },
     // {
     //   path: '/favorites',
     //   name: 'favorites',

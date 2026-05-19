@@ -5,7 +5,20 @@
       <span>WebVerse</span>
     </RouterLink>
 
+    <div class="nav-links">
+      <RouterLink to="/" class="nav-link">{{ $t('nav.discover') }}</RouterLink>
+      <RouterLink to="/ranking" class="nav-link">{{ $t('nav.ranking') }}</RouterLink>
+      <RouterLink to="/new" class="nav-link">{{ $t('nav.newTools') }}</RouterLink>
+    </div>
+
     <div class="nav-right">
+      <a
+        class="submit-btn"
+        href="mailto:ljg1136588708@gmail.com?subject=WebVerse%20Submit%20Site&body=Site%20URL%3A%0ADescription%3A"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{ $t('common.submitSite') }}</a>
+
       <a-dropdown :trigger="['click']" placement="bottomRight">
         <button class="lang-btn">
           {{ currentLang.flag }} <span class="lang-code">{{ currentLang.code.split('-')[0].toUpperCase() }}</span>
@@ -78,7 +91,41 @@ nav {
   -webkit-text-fill-color: transparent;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  margin-left: 8px;
+}
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-link.router-link-active { color: var(--text); background: rgba(255,255,255,0.08); }
+
 .nav-right { display: flex; align-items: center; gap: 12px; }
+
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--gradient);
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.submit-btn:hover { opacity: 0.85; }
 
 .lang-btn {
   display: inline-flex;
@@ -101,6 +148,8 @@ nav {
 :global(.lang-active) { color: var(--accent1) !important; }
 
 @media (max-width: 640px) {
+  .nav-links { display: none; }
   .lang-btn { padding: 5px 8px; font-size: 12px; }
+  .submit-btn { display: none; }
 }
 </style>

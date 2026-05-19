@@ -40,10 +40,10 @@ export const PODIUM: PodiumItem[] = [
 ]
 
 export const RANK_LIST: RankItem[] = [
-  { rank: 4,  id: 'github-copilot', name: 'GitHub Copilot', icon: '⚡', url: 'github.com/copilot', desc: 'AI 代码补全工具，集成于 VS Code / JetBrains，支持多语言', badges: ['pc', 'paid'],       category: 'dev',    score: 71800, trend: 'up',   trendValue: 2 },
+  { rank: 4,  id: 'copilot', name: 'GitHub Copilot', icon: '⚡', url: 'github.com/copilot', desc: 'AI 代码补全工具，集成于 VS Code / JetBrains，支持多语言', badges: ['pc', 'paid'],       category: 'dev',    score: 71800, trend: 'up',   trendValue: 2 },
   { rank: 5,  id: 'figma',      name: 'Figma',          icon: '🎨', url: 'figma.com',          desc: '协作式 UI/UX 设计工具，设计师与开发者首选',            badges: ['pc', 'app', 'free'], category: 'design', score: 68400, trend: 'same' },
   { rank: 6,  id: 'notion',     name: 'Notion',         icon: '📝', url: 'notion.so',          desc: '全能笔记与知识管理平台，团队协作一体化',                 badges: ['pc', 'app'],         category: 'office', score: 62100, trend: 'down', trendValue: 1 },
-  { rank: 7,  id: 'vscode-web', name: 'VS Code Web',    icon: '🖥', url: 'vscode.dev',         desc: '微软出品，在线版 VS Code，无需安装即可编码',             badges: ['pc', 'free'],        category: 'dev',    score: 59300, trend: 'up',   trendValue: 3 },
+  { rank: 7,  id: 'vscode', name: 'VS Code',    icon: '🖥', url: 'code.visualstudio.com', desc: '微软出品的免费开源代码编辑器，插件生态最丰富，全球开发者首选',             badges: ['pc', 'free'],        category: 'dev',    score: 59300, trend: 'up',   trendValue: 3 },
   { rank: 8,  id: 'vercel',     name: 'Vercel',         icon: '🚀', url: 'vercel.com',         desc: '前端部署与 Serverless 平台，Next.js 官方推荐',           badges: ['pc', 'freepaid'],    category: 'dev',    score: 54800, trend: 'up',   trendValue: 1 },
   { rank: 9,  id: 'linear',     name: 'Linear',         icon: '🗂', url: 'linear.app',         desc: '新一代项目管理工具，极致流畅，深受科技团队喜爱',          badges: ['pc', 'app'],         category: 'office', score: 51200, trend: 'same' },
   { rank: 10, id: 'perplexity', name: 'Perplexity AI',  icon: '🔍', url: 'perplexity.ai',      desc: 'AI 搜索引擎，实时联网，提供带引用来源的精准答案',          badges: ['pc', 'freepaid'],    category: 'ai',     score: 48900, trend: 'up',   trendValue: 2 },

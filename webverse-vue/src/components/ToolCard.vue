@@ -1,5 +1,5 @@
 <template>
-  <div class="card" @click="openSite">
+  <div class="card" @click="goDetail">
     <div class="card-header">
       <div class="card-logo">
         <ToolLogo :tool-id="tool.id" :icon="tool.icon" />
@@ -8,6 +8,7 @@
         <div class="card-name">{{ displayName }}</div>
         <div class="card-url">{{ tool.url }}</div>
       </div>
+      <a class="visit-icon" :href="fullUrl" target="_blank" rel="noopener noreferrer" @click.stop title="Visit Site">↗</a>
     </div>
 
     <BadgeGroup :badges="tool.badges" class="card-badges" />
@@ -33,12 +34,14 @@ import BadgeGroup from './BadgeGroup.vue'
 import ToolLogo from './ToolLogo.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import type { Tool } from '@/types'
 import { toolLocalizedDesc, toolLocalizedName } from '@/utils/toolLocaleText'
 
 const props = defineProps<{ tool: Tool }>()
 
 const { t, te, locale } = useI18n()
+const router = useRouter()
 
 const displayName = computed(() => {
   void locale.value
@@ -54,8 +57,8 @@ const fullUrl = computed(() =>
   props.tool.url.startsWith('http') ? props.tool.url : `https://${props.tool.url}`
 )
 
-function openSite() {
-  window.open(fullUrl.value, '_blank', 'noopener,noreferrer')
+function goDetail() {
+  router.push(`/tool/${props.tool.id}`)
 }
 </script>
 
@@ -92,6 +95,19 @@ function openSite() {
 .card-meta { flex: 1; min-width: 0; }
 .card-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-url { font-size: 11px; color: var(--muted); }
+
+.visit-icon {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.visit-icon:hover { color: var(--accent1); border-color: var(--accent1); }
 
 .card-badges { margin-bottom: 10px; position: relative; }
 

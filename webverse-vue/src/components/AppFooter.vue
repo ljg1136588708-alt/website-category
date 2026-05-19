@@ -2,6 +2,7 @@
   <footer>
     <p>
       {{ $t('common.copyright') }} ·
+      <RouterLink to="/about">{{ $t('common.aboutUs') }}</RouterLink> ·
       <RouterLink to="/privacy">{{ $t('common.privacyPolicy') }}</RouterLink>
     </p>
   </footer>
