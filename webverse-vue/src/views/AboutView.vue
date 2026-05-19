@@ -135,4 +135,7 @@ ul { padding-left: 20px; }
 li { margin-bottom: 6px; }
 a { color: var(--accent1); text-decoration: none; }
 a:hover { opacity: 0.8; }
+@media (max-width: 600px) {
+  .about-wrap { padding: 40px 16px 60px; }
+}
 </style>
