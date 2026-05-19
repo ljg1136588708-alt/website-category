@@ -12,13 +12,6 @@
     </div>
 
     <div class="nav-right">
-      <a
-        class="submit-btn"
-        href="mailto:ljg1136588708@gmail.com?subject=WebVerse%20Submit%20Site&body=Site%20URL%3A%0ADescription%3A"
-        target="_blank"
-        rel="noopener noreferrer"
-      >{{ $t('common.submitSite') }}</a>
-
       <a-dropdown :trigger="['click']" placement="bottomRight">
         <button class="lang-btn">
           {{ currentLang.flag }} <span class="lang-code">{{ currentLang.code.split('-')[0].toUpperCase() }}</span>
@@ -112,20 +105,6 @@ nav {
 
 .nav-right { display: flex; align-items: center; gap: 12px; }
 
-.submit-btn {
-  display: inline-flex;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  background: var(--gradient);
-  color: #fff;
-  text-decoration: none;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-}
-.submit-btn:hover { opacity: 0.85; }
 
 .lang-btn {
   display: inline-flex;
@@ -150,6 +129,5 @@ nav {
 @media (max-width: 640px) {
   .nav-links { display: none; }
   .lang-btn { padding: 5px 8px; font-size: 12px; }
-  .submit-btn { display: none; }
 }
 </style>
