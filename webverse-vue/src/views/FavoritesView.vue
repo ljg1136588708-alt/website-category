@@ -199,7 +199,8 @@ p { color: var(--muted); font-size: 14px; line-height: 1.6; }
 }
 .fav-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--glow); }
 .card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
-.card-logo { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+.card-logo { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); overflow: hidden; }
+.card-logo :deep(.tool-logo) { width: 44px; height: 44px; }
 .card-meta { flex: 1; min-width: 0; }
 .card-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-url { font-size: 11px; color: var(--muted); }
