@@ -19,6 +19,7 @@
           :key="item.id"
           class="podium-card"
           :class="`p${item.rank}`"
+          @click="router.push(`/tool/${item.id}`)"
         >
           <div class="podium-glow" />
           <span class="podium-medal">{{ medals[item.rank - 1] }}</span>
@@ -40,7 +41,7 @@
         <span class="section-tag">{{ $t('ranking.rankRange') }}</span>
       </div>
       <div class="rank-list">
-        <div v-for="item in rankList" :key="item.id" class="rank-row">
+        <div v-for="item in rankList" :key="item.id" class="rank-row" @click="router.push(`/tool/${item.id}`)">
           <span class="rank-n" :class="{ hi: item.rank <= 6 }">{{ item.rank }}</span>
           <div class="rank-logo">
             <ToolLogo :tool-id="item.id" :icon="item.icon" />
@@ -67,6 +68,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import BadgeGroup from '@/components/BadgeGroup.vue'
 import ToolLogo from '@/components/ToolLogo.vue'
 import { toolsApi } from '@/api'
@@ -74,6 +76,7 @@ import type { PodiumItem, RankItem } from '@/types'
 import { toolLocalizedDesc, toolLocalizedName } from '@/utils/toolLocaleText'
 
 const { t, te, locale } = useI18n()
+const router = useRouter()
 
 function rankToolName(item: PodiumItem | RankItem) {
   void locale.value

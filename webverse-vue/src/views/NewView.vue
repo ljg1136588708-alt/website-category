@@ -18,7 +18,7 @@
   <div class="main" v-if="!loading">
     <div class="content">
       <!-- Featured -->
-      <div v-if="featured" class="featured-card">
+      <div v-if="featured" class="featured-card" @click="router.push(`/tool/${featured.id}`)">
         <div class="featured-glow" />
         <div class="featured-logo">
           <ToolLogo :tool-id="featured.id" :icon="featured.icon" />
@@ -45,7 +45,7 @@
           <span class="timeline-date">{{ group.dateLabel }}</span>
         </div>
         <div class="cards-grid">
-          <div v-for="tool in group.tools" :key="tool.id" class="new-card">
+          <div v-for="tool in group.tools" :key="tool.id" class="new-card" @click="router.push(`/tool/${tool.id}`)">
             <div class="card-header">
               <div class="card-logo">
                 <ToolLogo :tool-id="tool.id" :icon="tool.icon" />
@@ -74,6 +74,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import BadgeGroup from '@/components/BadgeGroup.vue'
 import ToolLogo from '@/components/ToolLogo.vue'
 import { toolsApi } from '@/api'
@@ -81,6 +82,7 @@ import type { BentoTool, NewGroup, NewTool } from '@/types'
 import { toolLocalizedDesc, toolLocalizedFullDesc, toolLocalizedName } from '@/utils/toolLocaleText'
 
 const { t, te, locale } = useI18n()
+const router = useRouter()
 
 const loading = ref(true)
 const activeChip = ref('all')

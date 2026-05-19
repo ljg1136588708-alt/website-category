@@ -65,7 +65,7 @@
 
       <!-- Cards -->
       <div v-else class="cards-grid">
-        <div v-for="item in sortedItems" :key="item.id" class="fav-card">
+        <div v-for="item in sortedItems" :key="item.id" class="fav-card" @click="router.push(`/tool/${item.id}`)">
           <div class="card-header">
             <div class="card-logo">
               <ToolLogo :tool-id="item.id" :icon="item.icon" />
@@ -93,6 +93,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { toolLocalizedDesc, toolLocalizedName } from '@/utils/toolLocaleText'
 import BadgeGroup from '@/components/BadgeGroup.vue'
 import ToolLogo from '@/components/ToolLogo.vue'
@@ -100,6 +101,7 @@ import { useFavoritesStore } from '@/stores/favorites'
 import type { FavoriteItem } from '@/types'
 
 const { t, te, locale } = useI18n()
+const router = useRouter()
 
 function toolName(item: FavoriteItem) {
   void locale.value
